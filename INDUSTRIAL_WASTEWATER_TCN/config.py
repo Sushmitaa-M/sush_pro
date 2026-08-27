@@ -9,6 +9,9 @@ They are predefined based on standard industrial wastewater
 quality guidelines (BIS / CPCB / standard industrial ranges).
 """
 
+import numpy as np
+from typing import Tuple, Dict
+
 # ----------------------------------------------------------------------
 # Wastewater parameters
 # ----------------------------------------------------------------------
@@ -34,15 +37,6 @@ TEST_SIZE = 0.2  # 20 % of sequences reserved for testing
 # ----------------------------------------------------------------------
 # Per-parameter thresholds (Normal / Warning / Critical)
 # ----------------------------------------------------------------------
-# Each parameter has:
-#   - normal_min / normal_max : acceptable operating range
-#   - warning_min / warning_max : alert band
-#   - critical_min / critical_max : dangerous band
-#
-# A reading outside the normal range triggers a warning.
-# A reading outside the warning range (into critical band)
-# is flagged as Critical.
-
 THRESHOLDS = {
     "pH": {
         "normal_min": 6.5,
@@ -97,22 +91,62 @@ THRESHOLDS = {
 }
 
 # ----------------------------------------------------------------------
-# Anomaly detection (Autoencoder)
+# Anomaly detection (Autoencoder) & Risk engine settings
 # ----------------------------------------------------------------------
-# Percentile of reconstruction errors above which a sample is
-# considered anomalous.
 ANOMALY_PERCENTILE = 95
-
-# ----------------------------------------------------------------------
-# HSRAE risk classification
-# ----------------------------------------------------------------------
-# Combined severity thresholds for the risk engine.
-# anomaly_score is a 0-1 normalised value from the autoencoder.
 ANOMALY_SCORE_WARNING = 0.02
 ANOMALY_SCORE_CRITICAL = 0.05
-
-# How far ahead (hours) a spike must be within to trigger a warning
 SPIKE_HORIZON_HOURS = 24
-
-# Risk levels
 RISK_LEVELS = ["Normal", "Warning", "Critical"]
+
+
+# ----------------------------------------------------------------------
+# Physical & Dynamic Scaled Threshold Helper Functions
+# ----------------------------------------------------------------------
+
+def get_physical_spike_thresholds() -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Get 1D arrays of lower and upper normal operating limits for the 5 parameters
+    in original physical units.
+
+    Returns
+    -------
+    lower_bounds, upper_bounds : np.ndarray of shape (5,)
+    """
+    lower_bounds = np.array([THRESHOLDS[k]["normal_min"] for k in PARAM_KEYS], dtype=np.float32)
+    upper_bounds = np.array([THRESHOLDS[k]["normal_max"] for k in PARAM_KEYS], dtype=np.float32)
+    return lower_bounds, upper_bounds
+
+
+def get_scaled_spike_thresholds(
+    scaler, use_log1p: bool = False, log_params: list = None
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Convert physical normal thresholds into scaled space (z-scores) dynamically
+    using fitted scaler parameters and optional log1p transformation.
+
+    Parameters
+    ----------
+    scaler : StandardScaler or RobustScaler
+        Fitted scaler instance.
+    use_log1p : bool
+        Whether log1p transformation was applied prior to scaling.
+    log_params : list of str, optional
+        Keys of parameters that were log-transformed.
+
+    Returns
+    -------
+    scaled_lower, scaled_upper : np.ndarray of shape (5,)
+    """
+    lower_phys, upper_phys = get_physical_spike_thresholds()
+
+    if use_log1p:
+        from modules.preprocessing import get_log_param_indices, apply_log1p_transform
+        log_indices = get_log_param_indices(log_params)
+        lower_phys = apply_log1p_transform(lower_phys.reshape(1, -1), log_indices)[0]
+        upper_phys = apply_log1p_transform(upper_phys.reshape(1, -1), log_indices)[0]
+
+    scaled_lower = scaler.transform(lower_phys.reshape(1, -1))[0]
+    scaled_upper = scaler.transform(upper_phys.reshape(1, -1))[0]
+
+    return scaled_lower, scaled_upper
