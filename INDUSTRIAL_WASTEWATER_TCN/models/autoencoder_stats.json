@@ -1,0 +1,15 @@
+{
+  "anomaly_threshold": 0.163175,
+  "percentile": 95,
+  "train_mean_error": 0.102431,
+  "train_std_error": 0.046601,
+  "train_max_error": 0.667545,
+  "n_train_samples": 7962,
+  "parameters": [
+    "pH",
+    "COD",
+    "BOD",
+    "TDS",
+    "Temperature"
+  ]
+}
