@@ -26,30 +26,30 @@ export default function MetricCards({
         const th = thresholds ? thresholds[key] : null;
         const isSelected = activeParam === key;
 
-        const getStatusClass = (s) => {
-          if (s === 'Critical') return 'status-pill critical';
-          if (s === 'Warning') return 'status-pill warning';
-          return 'status-pill normal';
-        };
-
         const isIncreasing = peak !== '--' && curr !== '--' && peak > curr;
         const isDecreasing = peak !== '--' && curr !== '--' && peak < curr;
+
+        // Card style: Active card gets the signature deep forest green treatment inspired by Reference Image 1
+        let cardClass = 'metric-card animate-fade';
+        if (isSelected) {
+          if (status === 'Critical') cardClass += ' card-active-critical';
+          else if (status === 'Warning') cardClass += ' card-active-warning';
+          else cardClass += ' card-active-forest';
+        }
 
         return (
           <div
             key={key}
-            className="metric-card animate-fade"
+            className={cardClass}
             onClick={() => onSelectParam && onSelectParam(key)}
-            style={{
-              cursor: 'pointer',
-              borderColor: isSelected ? '#111827' : undefined,
-              boxShadow: isSelected ? '0 0 0 1px #111827' : undefined,
-              transition: 'all 0.15s ease',
-            }}
+            title={`Click to focus 48h forecast chart on ${key}`}
           >
             <div className="metric-card-top">
-              <span className="metric-param-name">{key}</span>
-              <span className={getStatusClass(status)} style={{ fontSize: '11px', padding: '3px 8px' }}>
+              <div className="metric-param-title-group">
+                <span className="metric-param-name">{key}</span>
+                <span className="metric-param-full-label">{label}</span>
+              </div>
+              <span className={`status-pill ${status.toLowerCase()}`} style={{ fontSize: '11px', padding: '3px 9px' }}>
                 {status}
               </span>
             </div>
@@ -57,31 +57,23 @@ export default function MetricCards({
             <div className="metric-value-row">
               <span className="metric-current-val">{curr}</span>
               {unit && <span className="metric-param-unit">{unit}</span>}
-              {isIncreasing && (
-                <ArrowUpRight
-                  size={16}
-                  style={{
-                    color: status === 'Critical' ? '#dc2626' : (status === 'Warning' ? '#d97706' : '#111827'),
-                    marginLeft: 'auto',
-                  }}
-                />
-              )}
-              {isDecreasing && (
-                <ArrowDownRight size={16} style={{ color: '#4b5563', marginLeft: 'auto' }} />
-              )}
-              {!isIncreasing && !isDecreasing && (
-                <Minus size={16} style={{ color: '#9ca3af', marginLeft: 'auto' }} />
-              )}
+
+              {/* Trend Icon in pill circle */}
+              <div className="trend-indicator-box">
+                {isIncreasing && <ArrowUpRight size={15} />}
+                {isDecreasing && <ArrowDownRight size={15} />}
+                {!isIncreasing && !isDecreasing && <Minus size={15} />}
+              </div>
             </div>
 
             <div className="metric-meta-grid">
-              <div>
+              <div className="meta-col">
                 <div className="meta-label">24h Peak</div>
                 <div className="meta-value">
                   {peak} {unit}
                 </div>
               </div>
-              <div>
+              <div className="meta-col">
                 <div className="meta-label">Standard Limit</div>
                 <div className="meta-value">
                   {th ? (key === 'pH' ? `${th.normal_min}-${th.normal_max}` : `< ${th.normal_max}`) : '--'}

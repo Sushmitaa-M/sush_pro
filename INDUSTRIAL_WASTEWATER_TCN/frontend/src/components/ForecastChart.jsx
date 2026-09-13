@@ -15,11 +15,11 @@ export default function ForecastChart({
   const setParam = onSelectParam || setInternalParam;
 
   const paramList = [
-    { key: 'COD', label: 'COD (mg/L)', color: '#111827' },
-    { key: 'pH', label: 'pH', color: '#111827' },
-    { key: 'BOD', label: 'BOD (mg/L)', color: '#111827' },
-    { key: 'TDS', label: 'TDS (mg/L)', color: '#111827' },
-    { key: 'Temperature', label: 'Temp (°C)', color: '#111827' },
+    { key: 'COD', label: 'COD (mg/L)' },
+    { key: 'pH', label: 'pH' },
+    { key: 'BOD', label: 'BOD (mg/L)' },
+    { key: 'TDS', label: 'TDS (mg/L)' },
+    { key: 'Temperature', label: 'Temp (°C)' },
   ];
 
   const th = thresholds ? thresholds[currentParam] : null;
@@ -45,7 +45,7 @@ export default function ForecastChart({
   if (allPoints.length === 0) {
     return (
       <div className="panel">
-        <div style={{ padding: '40px', textAlign: 'center', color: '#9ca3af' }}>
+        <div style={{ padding: '40px', textAlign: 'center', color: '#94a3b8' }}>
           Initializing live forecast telemetry...
         </div>
       </div>
@@ -122,34 +122,20 @@ export default function ForecastChart({
       <div className="panel-header">
         <div>
           <div className="panel-title">
-            <TrendingUp size={16} />
+            <TrendingUp size={18} className="panel-icon-emerald" />
             <span>Interactive 48-Hour Continuous Telemetry &amp; TCN Forecast</span>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                fontSize: '11px',
-                background: '#f0fdf4',
-                color: '#059669',
-                padding: '2px 8px',
-                borderRadius: '9999px',
-                border: '1px solid #bbf7d0',
-                marginLeft: '8px',
-                fontWeight: '600',
-              }}
-            >
-              <Radio size={11} className="pulse-dot" /> LIVE STREAM
+            <span className="live-stream-badge">
+              <Radio size={11} className="pulse-dot" /> LIVE TELEMETRY
             </span>
           </div>
-          <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '3px' }}>
-            Current {currentParam}: <strong>{currentVal.toFixed(1)} {th?.units}</strong> • 24h Forecast Peak: <strong>{peakFutureVal.toFixed(1)} {th?.units}</strong>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
+            Current {currentParam}: <strong style={{ color: '#064e3b' }}>{currentVal.toFixed(1)} {th?.units}</strong> • 24h Forecast Peak: <strong style={{ color: '#0f172a' }}>{peakFutureVal.toFixed(1)} {th?.units}</strong>
           </div>
         </div>
 
-        {/* Parameter Switcher */}
+        {/* Parameter Switcher Pill Buttons */}
         <div className="button-group">
-          {paramList.map(({ key, label }) => (
+          {paramList.map(({ key }) => (
             <button
               key={key}
               className={`filter-btn ${currentParam === key ? 'active' : ''}`}
@@ -171,6 +157,13 @@ export default function ForecastChart({
           className="chart-svg"
           onMouseLeave={() => setHoveredPoint(null)}
         >
+          <defs>
+            <linearGradient id="emeraldForecastGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#059669" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#059669" stopOpacity="0.01" />
+            </linearGradient>
+          </defs>
+
           {/* Subtle horizontal gridlines */}
           {[0, 0.25, 0.5, 0.75, 1].map((pct, i) => {
             const val = yMin + pct * (yMax - yMin);
@@ -182,13 +175,13 @@ export default function ForecastChart({
                   y1={y}
                   x2={width - padding.right}
                   y2={y}
-                  stroke="#f3f4f6"
+                  stroke="#f1f5f9"
                   strokeWidth="1"
                 />
                 <text
                   x={padding.left - 10}
                   y={y + 4}
-                  fill="#9ca3af"
+                  fill="#94a3b8"
                   fontSize="10"
                   fontFamily="'JetBrains Mono', monospace"
                   textAnchor="end"
@@ -210,7 +203,7 @@ export default function ForecastChart({
                 stroke="#dc2626"
                 strokeWidth="1.2"
                 strokeDasharray="4 3"
-                opacity="0.8"
+                opacity="0.85"
               />
               <text
                 x={width - padding.right - 8}
@@ -219,7 +212,7 @@ export default function ForecastChart({
                 fontSize="9"
                 fontFamily="'JetBrains Mono', monospace"
                 textAnchor="end"
-                fontWeight="600"
+                fontWeight="700"
               >
                 CRITICAL LIMIT ({th.warning_max})
               </text>
@@ -236,7 +229,7 @@ export default function ForecastChart({
                 stroke="#d97706"
                 strokeWidth="1"
                 strokeDasharray="3 3"
-                opacity="0.7"
+                opacity="0.75"
               />
               <text
                 x={width - padding.right - 8}
@@ -245,7 +238,7 @@ export default function ForecastChart({
                 fontSize="9"
                 fontFamily="'JetBrains Mono', monospace"
                 textAnchor="end"
-                fontWeight="500"
+                fontWeight="600"
               >
                 WARNING LIMIT ({th.normal_max})
               </text>
@@ -262,7 +255,7 @@ export default function ForecastChart({
                 stroke="#d97706"
                 strokeWidth="1"
                 strokeDasharray="3 3"
-                opacity="0.7"
+                opacity="0.75"
               />
               <text
                 x={width - padding.right - 8}
@@ -277,25 +270,26 @@ export default function ForecastChart({
             </g>
           )}
 
-          {/* Subtle Future Forecast Shading */}
-          <path d={futureAreaPath} fill="#f9fafb" opacity="0.6" />
+          {/* Soft Emerald Future Forecast Shading */}
+          <path d={futureAreaPath} fill="url(#emeraldForecastGrad)" />
 
-          {/* Past History Path (Solid Charcoal) */}
+          {/* Past History Path (Deep Teal / Forest) */}
           <path
             d={pastPath}
             fill="none"
-            stroke="#4b5563"
-            strokeWidth="2"
+            stroke="#0d9488"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
 
-          {/* Future TCN Prediction Path (Bold Black) */}
+          {/* Future TCN Prediction Path (Deep Forest Emerald with Dashed Continuity) */}
           <path
             d={futurePath}
             fill="none"
-            stroke="#111827"
-            strokeWidth="2.5"
+            stroke="#064e3b"
+            strokeWidth="2.8"
+            strokeDasharray="4 2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -306,16 +300,17 @@ export default function ForecastChart({
             y1={padding.top}
             x2={nowX}
             y2={height - padding.bottom}
-            stroke="#111827"
+            stroke="#064e3b"
             strokeWidth="1.5"
-            strokeDasharray="2 2"
+            strokeDasharray="3 3"
+            opacity="0.7"
           />
           <text
             x={nowX}
             y={padding.top - 10}
-            fill="#111827"
+            fill="#064e3b"
             fontSize="10"
-            fontWeight="700"
+            fontWeight="800"
             fontFamily="'JetBrains Mono', monospace"
             textAnchor="middle"
           >
@@ -330,7 +325,7 @@ export default function ForecastChart({
                 cy={nowY}
                 r="10"
                 fill="none"
-                stroke="#059669"
+                stroke="#10b981"
                 strokeWidth="1.5"
                 opacity="0.6"
                 className="pulse-dot"
@@ -357,10 +352,10 @@ export default function ForecastChart({
                 key={idx}
                 cx={x}
                 cy={y}
-                r={isHovered ? 6 : (pt.isFuture ? 3 : 1.5)}
-                fill={pt.isFuture ? '#111827' : '#4b5563'}
+                r={isHovered ? 6 : (pt.isFuture ? 3 : 1.8)}
+                fill={pt.isFuture ? '#064e3b' : '#0d9488'}
                 stroke="#ffffff"
-                strokeWidth={isHovered ? 2 : 1}
+                strokeWidth={isHovered ? 2.5 : 1}
                 style={{ cursor: 'pointer', transition: 'r 0.15s ease' }}
                 onMouseEnter={() => setHoveredPoint({ ...pt, x, y, idx })}
               />
@@ -377,10 +372,11 @@ export default function ForecastChart({
                 key={hr}
                 x={x}
                 y={height - padding.bottom + 18}
-                fill="#6b7280"
+                fill="#64748b"
                 fontSize="10"
                 fontFamily="'JetBrains Mono', monospace"
                 textAnchor="middle"
+                fontWeight={hr === 0 ? '700' : '500'}
               >
                 {hr === 0 ? '0h' : (hr > 0 ? `+${hr}h` : `${hr}h`)}
               </text>
@@ -396,23 +392,24 @@ export default function ForecastChart({
               left: `${(hoveredPoint.x / width) * 100}%`,
               top: `${(hoveredPoint.y / height) * 100}%`,
               transform: 'translate(-50%, -120%)',
-              background: '#111827',
+              background: '#04362a',
               color: '#ffffff',
-              padding: '6px 10px',
-              borderRadius: '6px',
+              padding: '6px 12px',
+              borderRadius: '8px',
               fontSize: '11px',
               fontFamily: "'JetBrains Mono', monospace",
               pointerEvents: 'none',
-              boxShadow: '0 4px 6px -1px rgba(0,0,0,0.2)',
+              boxShadow: '0 8px 16px rgba(4, 54, 42, 0.25)',
               whiteSpace: 'nowrap',
               zIndex: 10,
+              border: '1px solid rgba(167, 243, 208, 0.3)',
             }}
           >
-            <div>
+            <div style={{ color: '#a7f3d0', fontSize: '10px' }}>
               {hoveredPoint.isFuture ? 'Forecast ' : 'Observed '}
               <strong>{hoveredPoint.label}</strong>
             </div>
-            <div style={{ color: '#e5e7eb', fontSize: '13px', fontWeight: '700' }}>
+            <div style={{ color: '#ffffff', fontSize: '13px', fontWeight: '800' }}>
               {hoveredPoint.value.toFixed(2)} {th?.units}
             </div>
           </div>
@@ -422,11 +419,11 @@ export default function ForecastChart({
       {/* Legend */}
       <div className="chart-legend">
         <div className="legend-item">
-          <div className="legend-line" style={{ background: '#4b5563' }} />
-          <span>Past 24 Hours Observed</span>
+          <div className="legend-line" style={{ background: '#0d9488', height: '2.5px' }} />
+          <span>Past 24 Hours Observed (Telemetry)</span>
         </div>
         <div className="legend-item">
-          <div className="legend-line" style={{ background: '#111827', height: '3px' }} />
+          <div className="legend-line" style={{ background: '#064e3b', height: '3px', borderTop: '2px dashed #064e3b' }} />
           <span>Next 24 Hours TCN Forecast</span>
         </div>
         <div className="legend-item">

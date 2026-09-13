@@ -1,32 +1,45 @@
 /* ==========================================================================
-   Design System: Minimalist Light Mode (White, Black, Gray, Minimal Accents)
+   Design System: Sophisticated Environmental Green & Industrial Tech
+   Inspired by Reference UI: Deep Forest Green Navigation + Clean Light Dashboard
    ========================================================================== */
 
 :root {
   /* Surface & Background Palette */
-  --bg-main: #ffffff;
-  --bg-subtle: #f9fafb;
+  --bg-app: #f4f6f8;
+  --bg-main: #f8fafc;
   --bg-card: #ffffff;
-  --bg-card-hover: #fafafa;
-  --bg-inset: #f3f4f6;
+  --bg-card-hover: #fafcfb;
+  --bg-subtle: #f1f5f3;
+  --bg-inset: #eef3f1;
 
-  /* Monochrome Gray Scale */
-  --border-subtle: #f3f4f6;
-  --border-light: #e5e7eb;
-  --border-medium: #d1d5db;
-  --border-dark: #9ca3af;
-  --border-black: #111827;
+  /* Primary Deep Environmental Greens */
+  --green-deep: #064e3b;
+  --green-sidebar: #04362a;
+  --green-rail-gradient: linear-gradient(180deg, #064e3b 0%, #032b21 100%);
+  --green-primary: #059669;
+  --green-emerald: #10b981;
+  --green-teal: #0d9488;
+  --green-mint: #d1fae5;
+  --green-light: #ecfdf5;
+
+  /* Neutral Border & Gray Scale */
+  --border-subtle: #f1f5f9;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --border-dark: #94a3b8;
+  --border-forest: #064e3b;
 
   /* Typography Colors */
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-tertiary: #9ca3af;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --text-forest: #064e3b;
   --text-on-dark: #ffffff;
 
-  /* Minimal Functional Status Accents */
+  /* Semantic Status Colors (Preserved) */
   --status-normal: #059669;
-  --status-normal-bg: #f0fdf4;
-  --status-normal-border: #bbf7d0;
+  --status-normal-bg: #ecfdf5;
+  --status-normal-border: #a7f3d0;
 
   --status-warning: #d97706;
   --status-warning-bg: #fffbeb;
@@ -37,18 +50,22 @@
   --status-critical-border: #fecaca;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 16px -2px rgba(6, 78, 59, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 25px -4px rgba(6, 78, 59, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+  --shadow-rail: 0 8px 32px rgba(2, 43, 33, 0.28);
 
   /* Fonts */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 }
 
 * {
@@ -59,7 +76,7 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-main);
+  background-color: var(--bg-app);
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -90,7 +107,7 @@ input, select {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-dark);
+  background: var(--green-teal);
 }
 
 /* Animations */
@@ -101,7 +118,7 @@ input, select {
 
 @keyframes pulseSubtle {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.45; }
 }
 
 .animate-fade {
@@ -109,5 +126,5 @@ input, select {
 }
 
 .pulse-dot {
-  animation: pulseSubtle 2s infinite ease-in-out;
+  animation: pulseSubtle 1.8s infinite ease-in-out;
 }
