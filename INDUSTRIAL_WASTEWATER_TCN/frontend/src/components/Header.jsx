@@ -19,10 +19,7 @@ export default function Header({ status, hsraeResult, isConnected }) {
             <Activity size={18} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="brand-title">Wastewater AI Telemetry &amp; HSRAE Engine</h1>
-            <p className="brand-subtitle">
-              Facility: ETP Basin #04 • 24h Early Spike Forecasting &amp; Anomaly Detection
-            </p>
+            <h1 className="brand-title">Industrial Waste Water Prediction</h1>
           </div>
         </div>
 

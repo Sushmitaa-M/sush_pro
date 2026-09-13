@@ -6,8 +6,7 @@ import ForecastChart from './components/ForecastChart';
 import HsraePanel from './components/HsraePanel';
 import AutoencoderView from './components/AutoencoderView';
 import Simulator from './components/Simulator';
-import BenchmarksView from './components/BenchmarksView';
-import { Activity, ShieldAlert, Cpu, Sliders, BarChart3 } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, Sliders } from 'lucide-react';
 import './App.css';
 
 export default function App() {
@@ -172,7 +171,6 @@ export default function App() {
     { id: 'hsrae', label: 'HSRAE Risk Decision Engine', icon: ShieldAlert },
     { id: 'autoencoder', label: 'Autoencoder Anomaly Detection', icon: Cpu },
     { id: 'simulator', label: 'Interactive "What-If" Studio', icon: Sliders },
-    { id: 'benchmarks', label: 'Model Benchmarks', icon: BarChart3 },
   ];
 
   return (
@@ -294,10 +292,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab 5: Model Benchmarks */}
-        {activeTab === 'benchmarks' && (
-          <BenchmarksView metricsData={metrics} />
-        )}
+        {/* Tab 5: Model Benchmarks - removed */}
       </main>
 
       {/* Minimal Footer */}
